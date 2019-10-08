@@ -1,6 +1,6 @@
 #include <SDL.h>		// Always needs to be included for an SDL app
 #include <SDL_image.h>
-
+#include <SDL_ttf.h>
 #include <sdl_mixer.h> // <-- Para sonido
 
 #include <exception>
@@ -47,14 +47,60 @@ int main(int, char*[])
 	if (!(IMG_Init(imgFlags) & imgFlags)) throw "Error: SDL_image init";
 
 	//-->SDL_TTF
+
+	if (TTF_Init() == -1) throw "No es pot inicialitzar la llibreria TTF";
+
+	TTF_Font *font = TTF_OpenFont("../../res/ttf/saiyan.ttf", 100);
+	if (font == nullptr) throw "No es pot obrir la font";
+
 	//-->SDL_Mix
+
+	const Uint8 mixFlags(MIX_INIT_MP3 | MIX_INIT_OGG);
+	/*
+
+	if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
+		throw "No es pot inicialitzar SDL_mixer audio systems";
+	}
+
+	Mix_Music *SoundTrack{ Mix_LoadMUS("../../res/au/mainTheme.mp3") };
+	if (!SoundTrack) throw "No es pot carregar el Mix_Music SoundTrack";
+
+	Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
+	Mix_PlayMusic(SoundTrack, -1);
+	*/
+
+	// --- BUTTONS ---
+
+	SDL_Color basic{ 255,255,255, 255 };
+
+	SDL_Surface *Surface = TTF_RenderText_Blended(font, "HOLA", basic);  // No se puede crear porque la fuente es nullptr
+
+	SDL_Rect playButton{ SCREEN_WIDTH / 3, SCREEN_HEIGHT / 2, /*20, 13*/  /*Surface->w, Surface->h*/ 200, 200 };
+	SDL_Rect musicButton{ SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, /*20, 13*/ 200, 200};
+	SDL_Rect exitButton{ SCREEN_WIDTH - (SCREEN_WIDTH / 3), SCREEN_HEIGHT / 2, /*20, 13*/ 200, 200};
+
+	SDL_Color playColor{ 255, 0, 0 , 255 }, playColor2{ 0,255,0, 255 }; // ROJO Y VERDE
+	SDL_Color musicColor{ 0, 255, 0 , 255 };
+	SDL_Color exitColor{ 0, 0, 255 , 255 };
+
+	SDL_Color playColorH{ 200, 0, 0 , 255 };
+	SDL_Color musicColorH{ 0, 200, 0, 255 };
+	SDL_Color exitColorH{ 0, 0, 200, 255 };
+
+	std::string playText = "PLAY";
+	std::string musicText = "MUSIC";
+	std::string exitText = "EXIT";
+
+	SDL_Texture *playTexture = SDL_CreateTextureFromSurface(m_renderer, Surface);
+	SDL_Texture *musicTexture = SDL_CreateTextureFromSurface(m_renderer, Surface);
+	SDL_Texture *exitTexture = SDL_CreateTextureFromSurface(m_renderer, Surface);
 
 
 	// --- SPRITES ---
 		//Background
 	SDL_Texture* bgTexture{ IMG_LoadTexture(m_renderer, "../../res/img/bg.jpg") };
 	if (bgTexture == nullptr) throw "Error: bgTexture init";
-	SDL_Rect bgRect{ 0,0,SCREEN_WIDTH, SCREEN_HEIGHT };
+	SDL_Rect bgRect{ 0,0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
 	//mouse.x = event.motion.x;
 	//mouse.y = event.motion.y;
@@ -70,10 +116,15 @@ int main(int, char*[])
 
 	// --- AUDIO ---
 
+
 	// --- GAME LOOP ---
 
 	SDL_Event event;
 	bool isRunning = true;
+	bool click = false;
+	bool music = false;
+
+	bool colorChanged = false;
 
 	/*mouse.x = event.motion.x;
 	mouse.y = event.motion.y;*/
@@ -96,23 +147,84 @@ int main(int, char*[])
 				cursorRect.x = event.motion.x - CURSOR_WIDTH / 2; //mouse.x;
 				cursorRect.y = event.motion.y - CURSOR_HEIGHT / 2; //mouse.y;
 
-				// Para que no se salga de los bordes
+				// Para que no se salga de los bordes	// pues no hace falta parece
 				//if (cursorRect.x > SCREEN_WIDTH) cursorRect.x = 0; /*SCREEN_WIDTH - (CURSOR_WIDTH / 2);*/
 				//if (cursorRect.y > SCREEN_HEIGHT) cursorRect.y = 0; /*SCREEN_HEIGHT - (CURSOR_HEIGHT / 2);*/
 
+			case SDL_MOUSEBUTTONDOWN:
+
+				click = true;
+
+			case SDL_MOUSEBUTTONUP:
+
+				click = false;
 			default:;
 			}
 		}
 
 		// UPDATE
 
+		// if mouse está dentro de un botón ---> MIRAR EN QUÉ BOTÓN ESTÁ Y PONERLO EN HOVER
+
+		// if click en EXIT --> isRunning = false;
+
+		// if click en PLAY --> cambiar su color
+
+		// if click en MUSIC --> MUSIC a -1 (se apaga la música)
+
+
+		 // HOVER
+
+		if (cursorRect.x > playButton.x && cursorRect.x < (playButton.x + playButton.w) && cursorRect.y > playButton.y && cursorRect.y < (playButton.y + playButton.h)) {
+			/*COLOR HOVER*/ SDL_SetTextureColorMod(playTexture, 200, 0, 0); /*PlayerColorH*/
+		}
+		else {/*COLOR NORMAL*/ SDL_SetTextureColorMod(playTexture, 250, 0, 0); } /*PlayerColor*/
+
+		if (cursorRect.x > musicButton.x && cursorRect.x < (musicButton.x + musicButton.w) && cursorRect.y > musicButton.y && cursorRect.y < (musicButton.y + musicButton.h)) {
+			/*COLOR HOVER*/ SDL_SetTextureColorMod(playTexture, 0, 200, 0); /*MusicColorH*/
+		}
+		else {/*COLOR NORMAL*/ SDL_SetTextureColorMod(playTexture, 0, 255, 0); /*MusicColor*/
+		}
+
+		if (cursorRect.x > exitButton.x && cursorRect.x < (exitButton.x + exitButton.w) && cursorRect.y > exitButton.y && cursorRect.y < (exitButton.y + exitButton.h)) {
+			/*COLOR HOVER*/ SDL_SetTextureColorMod(playTexture, 0, 0, 200); /*ExitColorH*/
+		}
+		else {/*COLOR NORMAL*/ SDL_SetTextureColorMod(playTexture, 0, 0, 255); /*ExitColor*/
+		}
+
+
+		 // CLICK
+
+		if (click && cursorRect.x > playButton.x && cursorRect.x < (playButton.x + playButton.w) && cursorRect.y > playButton.y && cursorRect.y < (playButton.y + playButton.h)) {
+
+			if (!colorChanged) {/*PONER COLOR 2*/ SDL_SetTextureColorMod(playTexture, 0, 255, 0 /*(PlayerColor2)*/); colorChanged = true; }
+			else			   {/*PONER COLOR 1*/ SDL_SetTextureColorMod(playTexture, 255, 0, 0 /*(PlayerColor)*/); colorChanged = false; }
+		}
 		
+		////else if (click && cursorRect.x > musicButton.x && cursorRect.x < (musicButton.x + musicButton.w) && cursorRect.y > musicButton.y && cursorRect.y < (musicButton.y + musicButton.h)) {
+
+			////if(music) { Mix_PlayMusic(SoundTrack, -1); /*APAGAR MUSICA*/} else { Mix_PlayMusic(SoundTrack, 1); /*ENCENDER MUSICA*/}
+
+		////}
+		
+		else if (click && cursorRect.x > exitButton.x && cursorRect.x < (exitButton.x + exitButton.w) && cursorRect.y > exitButton.y && cursorRect.y < (exitButton.y + exitButton.h)) {
+			isRunning = false;
+		}
+
+
 
 		// DRAW
 		SDL_RenderClear(m_renderer);
 
 		//Background
 		SDL_RenderCopy(m_renderer, bgTexture, nullptr, &bgRect);
+		//SDL_RenderPresent(m_renderer);
+
+		//Buttons
+		SDL_RenderCopy(m_renderer, playTexture, nullptr, &playButton);
+		SDL_RenderCopy(m_renderer, musicTexture, nullptr, &musicButton);
+		SDL_RenderCopy(m_renderer, exitTexture, nullptr, &exitButton);
+		
 		//SDL_RenderPresent(m_renderer);
 
 		//Cursor
