@@ -75,11 +75,11 @@ int main(int, char*[])
 
 	SDL_Surface *Surface = TTF_RenderText_Blended(font, "HOLA", basic);  // No se puede crear porque la fuente es nullptr
 
-	SDL_Rect playButton{ SCREEN_WIDTH / 3, SCREEN_HEIGHT / 2, /*20, 13*/  /*Surface->w, Surface->h*/ 200, 200 };
-	SDL_Rect musicButton{ SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, /*20, 13*/ 200, 200};
-	SDL_Rect exitButton{ SCREEN_WIDTH - (SCREEN_WIDTH / 3), SCREEN_HEIGHT / 2, /*20, 13*/ 200, 200};
+	SDL_Rect playButton{ /*SCREEN_WIDTH / 3*/0, /*SCREEN_HEIGHT / 2*/0, 100, 40 };
+	SDL_Rect musicButton{ /*SCREEN_WIDTH / 2*/SCREEN_WIDTH-100, /*SCREEN_HEIGHT / 2*/SCREEN_HEIGHT-40, 100, 40};
+	SDL_Rect exitButton{ /*SCREEN_WIDTH - (SCREEN_WIDTH / 3)*/0, /*SCREEN_HEIGHT / 2*/SCREEN_HEIGHT-40, 100, 40};
 
-	SDL_Color playColor{ 255, 0, 0 , 255 }, playColor2{ 0,255,0, 255 }; // ROJO Y VERDE
+	SDL_Color playColor{ 255, 0, 0 , 255 }, playColor2{ 0,255, 0, 255 }; // ROJO Y VERDE
 	SDL_Color musicColor{ 0, 255, 0 , 255 };
 	SDL_Color exitColor{ 0, 0, 255 , 255 };
 
@@ -157,12 +157,13 @@ int main(int, char*[])
 
 			case SDL_MOUSEBUTTONUP:
 
-				click = false;
+				//click = false;
+
 			default:;
 			}
 		}
 
-		// UPDATE
+		// UPDATE	// NO SE CREAN TEXTURAS NI OSTIES, TODO SE CREA ANTES DEL GAMELOOP
 
 		// if mouse está dentro de un botón ---> MIRAR EN QUÉ BOTÓN ESTÁ Y PONERLO EN HOVER
 
@@ -211,9 +212,9 @@ int main(int, char*[])
 			isRunning = false;
 		}
 
+		click = false;
 
-
-		// DRAW
+		// DRAW	// NO TIENE QUE HABER IFS NI NADA
 		SDL_RenderClear(m_renderer);
 
 		//Background
@@ -245,3 +246,13 @@ int main(int, char*[])
 
 	return 0;
 }
+
+
+
+// KEYDOWN Y KEYUP NECESITAN COMPROBAR EL ESTADO ACTUAL Y ANTERIOR DE LA TECLA
+
+// KEYPRESSED ES SIMPLEMENTE SI SE HA PULSADO LA TECLA
+
+// HAY QUE PILLAR EL INPUT CON BOOLS PARA CADA TECLA
+
+// CREAR ELS "UTILS.H" PER DETECTAR LES COLISIONS	bool Collision(punt, recta); (ESTARÍA BIEN CREARNOS LAS CLASES punt Y recta)
