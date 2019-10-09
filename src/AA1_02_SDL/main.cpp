@@ -56,9 +56,9 @@ int main(int, char*[])
 	//-->SDL_Mix
 
 	const Uint8 mixFlags(MIX_INIT_MP3 | MIX_INIT_OGG);
-	/*
+	
 
-	if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
+	/*if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
 		throw "No es pot inicialitzar SDL_mixer audio systems";
 	}
 
@@ -66,14 +66,14 @@ int main(int, char*[])
 	if (!SoundTrack) throw "No es pot carregar el Mix_Music SoundTrack";
 
 	Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
-	Mix_PlayMusic(SoundTrack, -1);
-	*/
+	Mix_PlayMusic(SoundTrack, -1);*/
+	
 
 	// --- BUTTONS ---
 
 	SDL_Color basic{ 255,255,255, 255 };
 
-	SDL_Surface *Surface = TTF_RenderText_Blended(font, "HOLA", basic);  // No se puede crear porque la fuente es nullptr
+	SDL_Surface *Surface = TTF_RenderText_Blended(font, "HTT", basic);  // No se puede crear porque la fuente es nullptr
 
 	SDL_Rect playButton{ /*SCREEN_WIDTH / 3*/0, /*SCREEN_HEIGHT / 2*/0, 100, 40 };
 	SDL_Rect musicButton{ /*SCREEN_WIDTH / 2*/SCREEN_WIDTH-100, /*SCREEN_HEIGHT / 2*/SCREEN_HEIGHT-40, 100, 40};
@@ -122,7 +122,9 @@ int main(int, char*[])
 	SDL_Event event;
 	bool isRunning = true;
 	bool click = false;
-	bool music = false;
+	bool music = true;
+
+	bool play = false;
 
 	bool colorChanged = false;
 
@@ -151,19 +153,32 @@ int main(int, char*[])
 				//if (cursorRect.x > SCREEN_WIDTH) cursorRect.x = 0; /*SCREEN_WIDTH - (CURSOR_WIDTH / 2);*/
 				//if (cursorRect.y > SCREEN_HEIGHT) cursorRect.y = 0; /*SCREEN_HEIGHT - (CURSOR_HEIGHT / 2);*/
 
+				break;
+
 			case SDL_MOUSEBUTTONDOWN:
+
+				/*if (!click) { click = true; }
+				else { click = false; }*/
 
 				click = true;
 
+			break;
+
 			case SDL_MOUSEBUTTONUP:
 
-				//click = false;
+			//click = false;
+
+			break;
+
+
 
 			default:;
 			}
 		}
 
 		// UPDATE	// NO SE CREAN TEXTURAS NI OSTIES, TODO SE CREA ANTES DEL GAMELOOP
+
+		
 
 		// if mouse está dentro de un botón ---> MIRAR EN QUÉ BOTÓN ESTÁ Y PONERLO EN HOVER
 
@@ -176,41 +191,49 @@ int main(int, char*[])
 
 		 // HOVER
 
-		if (cursorRect.x > playButton.x && cursorRect.x < (playButton.x + playButton.w) && cursorRect.y > playButton.y && cursorRect.y < (playButton.y + playButton.h)) {
+		if (event.motion.x > playButton.x && event.motion.x < (playButton.x + playButton.w) && event.motion.y > playButton.y && event.motion.y < (playButton.y + playButton.h)) {
 			/*COLOR HOVER*/ SDL_SetTextureColorMod(playTexture, 200, 0, 0); /*PlayerColorH*/
 		}
 		else {/*COLOR NORMAL*/ SDL_SetTextureColorMod(playTexture, 250, 0, 0); } /*PlayerColor*/
 
-		if (cursorRect.x > musicButton.x && cursorRect.x < (musicButton.x + musicButton.w) && cursorRect.y > musicButton.y && cursorRect.y < (musicButton.y + musicButton.h)) {
+
+		if (event.motion.x > musicButton.x && event.motion.x < (musicButton.x + musicButton.w) && event.motion.y > musicButton.y && event.motion.y < (musicButton.y + musicButton.h)) {
 			/*COLOR HOVER*/ SDL_SetTextureColorMod(playTexture, 0, 200, 0); /*MusicColorH*/
 		}
-		else {/*COLOR NORMAL*/ SDL_SetTextureColorMod(playTexture, 0, 255, 0); /*MusicColor*/
-		}
+		else {/*COLOR NORMAL*/ SDL_SetTextureColorMod(playTexture, 0, 255, 0); /*MusicColor*/ }
 
-		if (cursorRect.x > exitButton.x && cursorRect.x < (exitButton.x + exitButton.w) && cursorRect.y > exitButton.y && cursorRect.y < (exitButton.y + exitButton.h)) {
+
+		if (event.motion.x > exitButton.x && event.motion.x < (exitButton.x + exitButton.w) && event.motion.y > exitButton.y && event.motion.y < (exitButton.y + exitButton.h)) {
 			/*COLOR HOVER*/ SDL_SetTextureColorMod(playTexture, 0, 0, 200); /*ExitColorH*/
 		}
-		else {/*COLOR NORMAL*/ SDL_SetTextureColorMod(playTexture, 0, 0, 255); /*ExitColor*/
-		}
+		else {/*COLOR NORMAL*/ SDL_SetTextureColorMod(playTexture, 0, 0, 255); /*ExitColor*/ }
 
 
 		 // CLICK
 
-		if (click && cursorRect.x > playButton.x && cursorRect.x < (playButton.x + playButton.w) && cursorRect.y > playButton.y && cursorRect.y < (playButton.y + playButton.h)) {
+		if (click && event.motion.x > playButton.x && event.motion.x < (playButton.x + playButton.w) && event.motion.y > playButton.y && event.motion.y < (playButton.y + playButton.h)) {
 
-			if (!colorChanged) {/*PONER COLOR 2*/ SDL_SetTextureColorMod(playTexture, 0, 255, 0 /*(PlayerColor2)*/); colorChanged = true; }
-			else			   {/*PONER COLOR 1*/ SDL_SetTextureColorMod(playTexture, 255, 0, 0 /*(PlayerColor)*/); colorChanged = false; }
-		}
-		
-		////else if (click && cursorRect.x > musicButton.x && cursorRect.x < (musicButton.x + musicButton.w) && cursorRect.y > musicButton.y && cursorRect.y < (musicButton.y + musicButton.h)) {
+			if (play) { play = false; }
+			else { play = true; }
 
-			////if(music) { Mix_PlayMusic(SoundTrack, -1); /*APAGAR MUSICA*/} else { Mix_PlayMusic(SoundTrack, 1); /*ENCENDER MUSICA*/}
+			//if (!colorChanged) {/*PONER COLOR 2*/ SDL_SetTextureColorMod(playTexture, 0, 255, 0 /*(PlayerColor2)*/); colorChanged = true; }
+			//else			   {/*PONER COLOR 1*/ SDL_SetTextureColorMod(playTexture, 255, 0, 0 /*(PlayerColor)*/); colorChanged = false; }
 
-		////}
-		
-		else if (click && cursorRect.x > exitButton.x && cursorRect.x < (exitButton.x + exitButton.w) && cursorRect.y > exitButton.y && cursorRect.y < (exitButton.y + exitButton.h)) {
+		} else if (click && event.motion.x > musicButton.x && event.motion.x < (musicButton.x + musicButton.w) && event.motion.y > musicButton.y && event.motion.y < (musicButton.y + musicButton.h)) {
+
+			if (music) { music = false; }
+			else { music = true; }
+
+		} else if (click && event.motion.x > exitButton.x && event.motion.x < (exitButton.x + exitButton.w) && event.motion.y > exitButton.y && event.motion.y < (exitButton.y + exitButton.h)) {
 			isRunning = false;
 		}
+
+
+		if (play) {/*PONER COLOR 2*/ SDL_SetTextureColorMod(playTexture, 0, 255, 0 /*(PlayerColor2)*/); colorChanged = true; }
+		else if (!play) {/*PONER COLOR 1*/ SDL_SetTextureColorMod(playTexture, 255, 0, 0 /*(PlayerColor)*/); colorChanged = false; }
+
+		if (music) {/*Mix_PlayMusic(SoundTrack, -1);*/ /*APAGAR MUSICA*/ }
+		else if (!music) {/*Mix_PlayMusic(SoundTrack, 1);*/ /*ENCENDER MUSICA*/ }
 
 		click = false;
 
@@ -222,8 +245,13 @@ int main(int, char*[])
 		//SDL_RenderPresent(m_renderer);
 
 		//Buttons
+		
 		SDL_RenderCopy(m_renderer, playTexture, nullptr, &playButton);
+
+
 		SDL_RenderCopy(m_renderer, musicTexture, nullptr, &musicButton);
+
+
 		SDL_RenderCopy(m_renderer, exitTexture, nullptr, &exitButton);
 		
 		//SDL_RenderPresent(m_renderer);
