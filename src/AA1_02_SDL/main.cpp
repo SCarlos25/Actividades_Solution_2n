@@ -73,27 +73,38 @@ int main(int, char*[])
 
 	SDL_Color basic{ 255,255,255, 255 };
 
-	SDL_Surface *Surface = TTF_RenderText_Blended(font, "HTT", basic);  // No se puede crear porque la fuente es nullptr
-
-	SDL_Rect playButton{ /*SCREEN_WIDTH / 3*/0, /*SCREEN_HEIGHT / 2*/0, 100, 40 };
-	SDL_Rect musicButton{ /*SCREEN_WIDTH / 2*/SCREEN_WIDTH-100, /*SCREEN_HEIGHT / 2*/SCREEN_HEIGHT-40, 100, 40};
-	SDL_Rect exitButton{ /*SCREEN_WIDTH - (SCREEN_WIDTH / 3)*/0, /*SCREEN_HEIGHT / 2*/SCREEN_HEIGHT-40, 100, 40};
+	std::string playText = "PLAY";
+	std::string musicText = "MUSIC";
+	std::string exitText = "EXIT";
 
 	SDL_Color playColor{ 255, 0, 0 , 255 }, playColor2{ 0,255, 0, 255 }; // ROJO Y VERDE
 	SDL_Color musicColor{ 0, 255, 0 , 255 };
 	SDL_Color exitColor{ 0, 0, 255 , 255 };
 
+	SDL_Color playColor1 = playColor; // PARA COLOR ORIGINAL
+	SDL_Color musicColor1 = musicColor;
+	SDL_Color exitColor1 = exitColor;
+
 	SDL_Color playColorH{ 200, 0, 0 , 255 };
 	SDL_Color musicColorH{ 0, 200, 0, 255 };
 	SDL_Color exitColorH{ 0, 0, 200, 255 };
 
-	std::string playText = "PLAY";
-	std::string musicText = "MUSIC";
-	std::string exitText = "EXIT";
+	SDL_Surface *playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColor);  // RESUELTO No se puede crear porque la fuente es nullptr
 
-	SDL_Texture *playTexture = SDL_CreateTextureFromSurface(m_renderer, Surface);
-	SDL_Texture *musicTexture = SDL_CreateTextureFromSurface(m_renderer, Surface);
-	SDL_Texture *exitTexture = SDL_CreateTextureFromSurface(m_renderer, Surface);
+	SDL_Surface *musicSurface = TTF_RenderText_Blended(font, musicText.c_str(), musicColor);
+
+	SDL_Surface *exitSurface = TTF_RenderText_Blended(font, exitText.c_str(), exitColor);
+
+	SDL_Rect playButton{ SCREEN_WIDTH / 3/*0*/, SCREEN_HEIGHT / 2/*0*/, 100, 40 };
+	SDL_Rect musicButton{ SCREEN_WIDTH / 2/*SCREEN_WIDTH-100*/, SCREEN_HEIGHT / 2/*SCREEN_HEIGHT-40*/, 100, 40};
+	SDL_Rect exitButton{ SCREEN_WIDTH - (SCREEN_WIDTH / 3)/*0*/, SCREEN_HEIGHT / 2/*SCREEN_HEIGHT-40*/, 100, 40};
+
+
+	
+
+	SDL_Texture *playTexture = SDL_CreateTextureFromSurface(m_renderer, playSurface);
+	SDL_Texture *musicTexture = SDL_CreateTextureFromSurface(m_renderer, musicSurface);
+	SDL_Texture *exitTexture = SDL_CreateTextureFromSurface(m_renderer, exitSurface);
 
 
 	// --- SPRITES ---
@@ -106,7 +117,7 @@ int main(int, char*[])
 	//mouse.y = event.motion.y;
 
 		//Cursor
-	SDL_Texture* cursorTexture{ IMG_LoadTexture(m_renderer, "../../res/img/kintoun.png") };
+	SDL_Texture* cursorTexture{ IMG_LoadTexture(m_renderer, "../../res/img/kintoun.png") }; //kintoun.png
 	if (cursorTexture == nullptr) throw "Error: cursorTexture init";
 	SDL_Rect cursorRect{/*Coordenadas X e Y del ratón*/ mouse.x, mouse.y, CURSOR_WIDTH, CURSOR_HEIGHT };
 
@@ -178,7 +189,7 @@ int main(int, char*[])
 
 		// UPDATE	// NO SE CREAN TEXTURAS NI OSTIES, TODO SE CREA ANTES DEL GAMELOOP
 
-		
+		//SDL_
 
 		// if mouse está dentro de un botón ---> MIRAR EN QUÉ BOTÓN ESTÁ Y PONERLO EN HOVER
 
@@ -192,22 +203,28 @@ int main(int, char*[])
 		 // HOVER
 
 		if (event.motion.x > playButton.x && event.motion.x < (playButton.x + playButton.w) && event.motion.y > playButton.y && event.motion.y < (playButton.y + playButton.h)) {
-			/*COLOR HOVER*/ SDL_SetTextureColorMod(playTexture, 200, 0, 0); /*PlayerColorH*/
+			/*COLOR HOVER*/ //SDL_SetTextureColorMod(playTexture, 100, 0, 0); /*PlayerColorH*/
+			playColor = playColorH;
 		}
-		else {/*COLOR NORMAL*/ SDL_SetTextureColorMod(playTexture, 250, 0, 0); } /*PlayerColor*/
-
+		else {/*COLOR NORMAL*/ //SDL_SetTextureColorMod(playTexture, 250, 0, 0); } /*PlayerColor*/
+			playColor = playColor1;
+		}
 
 		if (event.motion.x > musicButton.x && event.motion.x < (musicButton.x + musicButton.w) && event.motion.y > musicButton.y && event.motion.y < (musicButton.y + musicButton.h)) {
-			/*COLOR HOVER*/ SDL_SetTextureColorMod(playTexture, 0, 200, 0); /*MusicColorH*/
+			/*COLOR HOVER*/ //SDL_SetTextureColorMod(playTexture, 0, 100, 0); /*MusicColorH*/
+			musicColor = musicColorH;
 		}
-		else {/*COLOR NORMAL*/ SDL_SetTextureColorMod(playTexture, 0, 255, 0); /*MusicColor*/ }
-
+		else {/*COLOR NORMAL*/ //SDL_SetTextureColorMod(playTexture, 0, 255, 0); /*MusicColor*/ }
+			musicColor = musicColor1;
+		}
 
 		if (event.motion.x > exitButton.x && event.motion.x < (exitButton.x + exitButton.w) && event.motion.y > exitButton.y && event.motion.y < (exitButton.y + exitButton.h)) {
-			/*COLOR HOVER*/ SDL_SetTextureColorMod(playTexture, 0, 0, 200); /*ExitColorH*/
+			/*COLOR HOVER*/ //SDL_SetTextureColorMod(playTexture, 0, 0, 100); /*ExitColorH*/
+			exitColor = exitColorH;
 		}
-		else {/*COLOR NORMAL*/ SDL_SetTextureColorMod(playTexture, 0, 0, 255); /*ExitColor*/ }
-
+		else {/*COLOR NORMAL*/ //SDL_SetTextureColorMod(playTexture, 0, 0, 255); /*ExitColor*/ }
+			exitColor = exitColor1;
+		}
 
 		 // CLICK
 
@@ -229,8 +246,8 @@ int main(int, char*[])
 		}
 
 
-		if (play) {/*PONER COLOR 2*/ SDL_SetTextureColorMod(playTexture, 0, 255, 0 /*(PlayerColor2)*/); colorChanged = true; }
-		else if (!play) {/*PONER COLOR 1*/ SDL_SetTextureColorMod(playTexture, 255, 0, 0 /*(PlayerColor)*/); colorChanged = false; }
+		if (play) { playColor = playColor2;/*PONER COLOR 2*/ /*SDL_SetTextureColorMod(playTexture, 0, 255, 0 /*(PlayerColor2)*//*);*/ colorChanged = true; }
+		else if (!play) { playColor = playColor1; /*PONER COLOR 1*/ /*SDL_SetTextureColorMod(playTexture, 255, 0, 0*/ /*(PlayerColor)*//*);*/ colorChanged = false; }
 
 		if (music) {/*Mix_PlayMusic(SoundTrack, -1);*/ /*APAGAR MUSICA*/ }
 		else if (!music) {/*Mix_PlayMusic(SoundTrack, 1);*/ /*ENCENDER MUSICA*/ }
@@ -238,26 +255,24 @@ int main(int, char*[])
 		click = false;
 
 		// DRAW	// NO TIENE QUE HABER IFS NI NADA
-		SDL_RenderClear(m_renderer);
+		//SDL_RenderClear(m_renderer);
 
 		//Background
 		SDL_RenderCopy(m_renderer, bgTexture, nullptr, &bgRect);
-		//SDL_RenderPresent(m_renderer);
+
 
 		//Buttons
 		
 		SDL_RenderCopy(m_renderer, playTexture, nullptr, &playButton);
-
-
+		
 		SDL_RenderCopy(m_renderer, musicTexture, nullptr, &musicButton);
-
-
+		
 		SDL_RenderCopy(m_renderer, exitTexture, nullptr, &exitButton);
 		
-		//SDL_RenderPresent(m_renderer);
 
 		//Cursor
 		SDL_RenderCopy(m_renderer, cursorTexture, nullptr, &cursorRect);
+
 		SDL_RenderPresent(m_renderer);
 
 	}
