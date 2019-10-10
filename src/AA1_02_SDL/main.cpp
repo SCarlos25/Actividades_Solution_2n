@@ -58,7 +58,7 @@ int main(int, char*[])
 	const Uint8 mixFlags(MIX_INIT_MP3 | MIX_INIT_OGG);
 	
 
-	/*if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
+	/*if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {	// NO SE ABRE
 		throw "No es pot inicialitzar SDL_mixer audio systems";
 	}
 
@@ -85,24 +85,19 @@ int main(int, char*[])
 	SDL_Color musicColor1 = musicColor;
 	SDL_Color exitColor1 = exitColor;
 
-	SDL_Color playColorH{ 200, 0, 0 , 255 };
-	SDL_Color musicColorH{ 0, 200, 0, 255 };
-	SDL_Color exitColorH{ 0, 0, 200, 255 };
+	SDL_Color playColorH1{ 150, 0, 0 , 255 }, playColorH2{ 0,150,0,255 };
+	SDL_Color musicColorH{ 0, 150, 0, 255 };
+	SDL_Color exitColorH{ 0, 0, 150, 255 };
 
 	SDL_Surface *playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColor);  // RESUELTO No se puede crear porque la fuente es nullptr
-
 	SDL_Surface *musicSurface = TTF_RenderText_Blended(font, musicText.c_str(), musicColor);
-
 	SDL_Surface *exitSurface = TTF_RenderText_Blended(font, exitText.c_str(), exitColor);
 
-	SDL_Rect playButton{ SCREEN_WIDTH / 3/*0*/, SCREEN_HEIGHT / 2/*0*/, 100, 40 };
-	SDL_Rect musicButton{ SCREEN_WIDTH / 2/*SCREEN_WIDTH-100*/, SCREEN_HEIGHT / 2/*SCREEN_HEIGHT-40*/, 100, 40};
-	SDL_Rect exitButton{ SCREEN_WIDTH - (SCREEN_WIDTH / 3)/*0*/, SCREEN_HEIGHT / 2/*SCREEN_HEIGHT-40*/, 100, 40};
+	SDL_Rect playButton{ SCREEN_WIDTH / 3/*0*/, SCREEN_HEIGHT / 5/*0*/, 100, 40 };
+	SDL_Rect musicButton{ SCREEN_WIDTH / 2/*SCREEN_WIDTH-100*/, SCREEN_HEIGHT / 5/*SCREEN_HEIGHT-40*/, 100, 40};
+	SDL_Rect exitButton{ SCREEN_WIDTH - (SCREEN_WIDTH / 3)/*0*/, SCREEN_HEIGHT / 5/*SCREEN_HEIGHT-40*/, 100, 40};
 
-
-	
-
-	SDL_Texture *playTexture = SDL_CreateTextureFromSurface(m_renderer, playSurface);
+	SDL_Texture *playTexture = SDL_CreateTextureFromSurface(m_renderer, playSurface);	// NORMAL TEXTURE
 	SDL_Texture *musicTexture = SDL_CreateTextureFromSurface(m_renderer, musicSurface);
 	SDL_Texture *exitTexture = SDL_CreateTextureFromSurface(m_renderer, exitSurface);
 
@@ -203,27 +198,31 @@ int main(int, char*[])
 		 // HOVER
 
 		if (event.motion.x > playButton.x && event.motion.x < (playButton.x + playButton.w) && event.motion.y > playButton.y && event.motion.y < (playButton.y + playButton.h)) {
-			/*COLOR HOVER*/ //SDL_SetTextureColorMod(playTexture, 100, 0, 0); /*PlayerColorH*/
-			playColor = playColorH;
+			/*COLOR HOVER*/ 
+			if (play) {
+				playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColorH1);
+			}
+			else { playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColorH2); }
 		}
-		else {/*COLOR NORMAL*/ //SDL_SetTextureColorMod(playTexture, 250, 0, 0); } /*PlayerColor*/
-			playColor = playColor1;
+		else {/*COLOR NORMAL*/
+			playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColor1);
+
 		}
 
 		if (event.motion.x > musicButton.x && event.motion.x < (musicButton.x + musicButton.w) && event.motion.y > musicButton.y && event.motion.y < (musicButton.y + musicButton.h)) {
-			/*COLOR HOVER*/ //SDL_SetTextureColorMod(playTexture, 0, 100, 0); /*MusicColorH*/
-			musicColor = musicColorH;
+			/*COLOR HOVER*/
+			musicSurface = TTF_RenderText_Blended(font, musicText.c_str(), musicColorH);
 		}
-		else {/*COLOR NORMAL*/ //SDL_SetTextureColorMod(playTexture, 0, 255, 0); /*MusicColor*/ }
-			musicColor = musicColor1;
+		else {/*COLOR NORMAL*/
+			musicSurface = TTF_RenderText_Blended(font, musicText.c_str(), musicColor1);
 		}
 
 		if (event.motion.x > exitButton.x && event.motion.x < (exitButton.x + exitButton.w) && event.motion.y > exitButton.y && event.motion.y < (exitButton.y + exitButton.h)) {
-			/*COLOR HOVER*/ //SDL_SetTextureColorMod(playTexture, 0, 0, 100); /*ExitColorH*/
-			exitColor = exitColorH;
+			/*COLOR HOVER*/
+			exitSurface = TTF_RenderText_Blended(font, exitText.c_str(), exitColorH);
 		}
-		else {/*COLOR NORMAL*/ //SDL_SetTextureColorMod(playTexture, 0, 0, 255); /*ExitColor*/ }
-			exitColor = exitColor1;
+		else {/*COLOR NORMAL*/
+			exitSurface = TTF_RenderText_Blended(font, exitText.c_str(), exitColor1);
 		}
 
 		 // CLICK
@@ -233,7 +232,7 @@ int main(int, char*[])
 			if (play) { play = false; }
 			else { play = true; }
 
-			//if (!colorChanged) {/*PONER COLOR 2*/ SDL_SetTextureColorMod(playTexture, 0, 255, 0 /*(PlayerColor2)*/); colorChanged = true; }
+			//if (!colorChanged) {/*PONER COLOR 2*/ SDL_SetTextureColorMod(playTexture, 0, 255, 0 /*(PlayerColor2)*/); colorChanged = true; } // SE HACE ABAJO
 			//else			   {/*PONER COLOR 1*/ SDL_SetTextureColorMod(playTexture, 255, 0, 0 /*(PlayerColor)*/); colorChanged = false; }
 
 		} else if (click && event.motion.x > musicButton.x && event.motion.x < (musicButton.x + musicButton.w) && event.motion.y > musicButton.y && event.motion.y < (musicButton.y + musicButton.h)) {
@@ -246,11 +245,22 @@ int main(int, char*[])
 		}
 
 
-		if (play) { playColor = playColor2;/*PONER COLOR 2*/ /*SDL_SetTextureColorMod(playTexture, 0, 255, 0 /*(PlayerColor2)*//*);*/ colorChanged = true; }
-		else if (!play) { playColor = playColor1; /*PONER COLOR 1*/ /*SDL_SetTextureColorMod(playTexture, 255, 0, 0*/ /*(PlayerColor)*//*);*/ colorChanged = false; }
+		if (play) {
+			playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColor2);
+			colorChanged = true;
+		}
+		else if (!play) {
+			playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColor1);
+			colorChanged = false;
+		}
 
 		if (music) {/*Mix_PlayMusic(SoundTrack, -1);*/ /*APAGAR MUSICA*/ }
 		else if (!music) {/*Mix_PlayMusic(SoundTrack, 1);*/ /*ENCENDER MUSICA*/ }
+
+		playTexture = SDL_CreateTextureFromSurface(m_renderer, playSurface);
+		musicTexture = SDL_CreateTextureFromSurface(m_renderer, musicSurface);
+		exitTexture = SDL_CreateTextureFromSurface(m_renderer, exitSurface);
+
 
 		click = false;
 
