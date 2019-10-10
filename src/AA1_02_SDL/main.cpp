@@ -78,7 +78,7 @@ int main(int, char*[])
 	std::string exitText = "EXIT";
 
 	SDL_Color playColor{ 255, 0, 0 , 255 }, playColor2{ 0,255, 0, 255 }; // ROJO Y VERDE
-	SDL_Color musicColor{ 0, 255, 0 , 255 };
+	SDL_Color musicColor{ 255, 255, 0 , 255 };
 	SDL_Color exitColor{ 0, 0, 255 , 255 };
 
 	SDL_Color playColor1 = playColor; // PARA COLOR ORIGINAL
@@ -86,7 +86,7 @@ int main(int, char*[])
 	SDL_Color exitColor1 = exitColor;
 
 	SDL_Color playColorH1{ 150, 0, 0 , 255 }, playColorH2{ 0,150,0,255 };
-	SDL_Color musicColorH{ 0, 150, 0, 255 };
+	SDL_Color musicColorH{ 150, 150, 0, 255 };
 	SDL_Color exitColorH{ 0, 0, 150, 255 };
 
 	SDL_Surface *playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColor);  // RESUELTO No se puede crear porque la fuente es nullptr
@@ -226,10 +226,10 @@ int main(int, char*[])
 
 		if (event.motion.x > playButton.x && event.motion.x < (playButton.x + playButton.w) && event.motion.y > playButton.y && event.motion.y < (playButton.y + playButton.h)) {
 			/*COLOR HOVER*/
-			if (play) {
+			/*if (play) {																	// ESTO YA SE HACE ABAJO
 				playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColorH2);
 			}
-			else { playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColorH1); }
+			else { playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColorH1); }*/
 			playH = true;
 		}
 		else {/*COLOR NORMAL*/
