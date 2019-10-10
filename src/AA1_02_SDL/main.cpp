@@ -57,7 +57,7 @@ int main(int, char*[])
 
 	const Uint8 mixFlags(MIX_INIT_MP3 | MIX_INIT_OGG);
 	
-
+	/// NO SE ABRE PORQUE EL MONITOR NO TIENE ALTAVOZ !!!
 	/*if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {	// NO SE ABRE
 		throw "No es pot inicialitzar SDL_mixer audio systems";
 	}
@@ -131,6 +131,7 @@ int main(int, char*[])
 	bool music = true;
 
 	bool play = false;
+	bool playH = false;
 
 	bool colorChanged = false;
 
@@ -195,17 +196,44 @@ int main(int, char*[])
 		// if click en MUSIC --> MUSIC a -1 (se apaga la música)
 
 
-		 // HOVER
+		 // CLICK
+
+		if (click && event.motion.x > playButton.x && event.motion.x < (playButton.x + playButton.w) && event.motion.y > playButton.y && event.motion.y < (playButton.y + playButton.h)) {
+
+			if (play) { play = false; }
+			else if (!play) { play = true; }
+
+			//if (!colorChanged) {/*PONER COLOR 2*/ ; colorChanged = true; } // SE HACE ABAJO
+			//else			     {/*PONER COLOR 1*/ ; colorChanged = false; }
+
+		} else if (click && event.motion.x > musicButton.x && event.motion.x < (musicButton.x + musicButton.w) && event.motion.y > musicButton.y && event.motion.y < (musicButton.y + musicButton.h)) {
+
+			if (music) { music = false; }
+			else { music = true; }
+
+		} else if (click && event.motion.x > exitButton.x && event.motion.x < (exitButton.x + exitButton.w) && event.motion.y > exitButton.y && event.motion.y < (exitButton.y + exitButton.h)) {
+			isRunning = false;
+		}
+
+
+
+		if (music) {/*Mix_PlayMusic(SoundTrack, -1);*/ /*APAGAR MUSICA*/ }
+		else if (!music) {/*Mix_PlayMusic(SoundTrack, 1);*/ /*ENCENDER MUSICA*/ }
+
+		
+
+		// HOVER
 
 		if (event.motion.x > playButton.x && event.motion.x < (playButton.x + playButton.w) && event.motion.y > playButton.y && event.motion.y < (playButton.y + playButton.h)) {
-			/*COLOR HOVER*/ 
+			/*COLOR HOVER*/
 			if (play) {
-				playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColorH1);
+				playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColorH2);
 			}
-			else { playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColorH2); }
+			else { playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColorH1); }
+			playH = true;
 		}
 		else {/*COLOR NORMAL*/
-			playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColor1);
+			playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColor1); playH = false;
 
 		}
 
@@ -225,37 +253,22 @@ int main(int, char*[])
 			exitSurface = TTF_RenderText_Blended(font, exitText.c_str(), exitColor1);
 		}
 
-		 // CLICK
-
-		if (click && event.motion.x > playButton.x && event.motion.x < (playButton.x + playButton.w) && event.motion.y > playButton.y && event.motion.y < (playButton.y + playButton.h)) {
-
-			if (play) { play = false; }
-			else { play = true; }
-
-			//if (!colorChanged) {/*PONER COLOR 2*/ SDL_SetTextureColorMod(playTexture, 0, 255, 0 /*(PlayerColor2)*/); colorChanged = true; } // SE HACE ABAJO
-			//else			   {/*PONER COLOR 1*/ SDL_SetTextureColorMod(playTexture, 255, 0, 0 /*(PlayerColor)*/); colorChanged = false; }
-
-		} else if (click && event.motion.x > musicButton.x && event.motion.x < (musicButton.x + musicButton.w) && event.motion.y > musicButton.y && event.motion.y < (musicButton.y + musicButton.h)) {
-
-			if (music) { music = false; }
-			else { music = true; }
-
-		} else if (click && event.motion.x > exitButton.x && event.motion.x < (exitButton.x + exitButton.w) && event.motion.y > exitButton.y && event.motion.y < (exitButton.y + exitButton.h)) {
-			isRunning = false;
-		}
 
 
 		if (play) {
-			playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColor2);
+			if (playH) playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColorH2);
+			else
+				playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColor2);
 			colorChanged = true;
 		}
 		else if (!play) {
-			playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColor1);
+			if (playH) playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColorH1);
+			else
+				playSurface = TTF_RenderText_Blended(font, playText.c_str(), playColor1);
 			colorChanged = false;
 		}
 
-		if (music) {/*Mix_PlayMusic(SoundTrack, -1);*/ /*APAGAR MUSICA*/ }
-		else if (!music) {/*Mix_PlayMusic(SoundTrack, 1);*/ /*ENCENDER MUSICA*/ }
+
 
 		playTexture = SDL_CreateTextureFromSurface(m_renderer, playSurface);
 		musicTexture = SDL_CreateTextureFromSurface(m_renderer, musicSurface);
