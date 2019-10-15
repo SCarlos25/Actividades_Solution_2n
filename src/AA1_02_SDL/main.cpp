@@ -105,9 +105,9 @@ int main(int, char*[])
 	SDL_Surface *musicSurface = TTF_RenderText_Blended(font, musicText.c_str(), musicColor);
 	SDL_Surface *exitSurface = TTF_RenderText_Blended(font, exitText.c_str(), exitColor);
 
-	SDL_Rect playButton{ SCREEN_WIDTH / 3/*0*/, SCREEN_HEIGHT / 5/*0*/, 100, 40 };
-	SDL_Rect musicButton{ SCREEN_WIDTH / 2/*SCREEN_WIDTH-100*/, SCREEN_HEIGHT / 5/*SCREEN_HEIGHT-40*/, 100, 40};
-	SDL_Rect exitButton{ SCREEN_WIDTH - (SCREEN_WIDTH / 3)/*0*/, SCREEN_HEIGHT / 5/*SCREEN_HEIGHT-40*/, 100, 40};
+	SDL_Rect playButton{ SCREEN_WIDTH / 3-50/*playButton.x/2*/, SCREEN_HEIGHT / 5, 100, 40 };
+	SDL_Rect musicButton{ SCREEN_WIDTH / 2-50/*musicButton.x/2*/, SCREEN_HEIGHT / 5/*SCREEN_HEIGHT-40*/, 100, 40};
+	SDL_Rect exitButton{ SCREEN_WIDTH - (SCREEN_WIDTH / 3)-50/*exitButton.x/2*/, SCREEN_HEIGHT / 5, 100, 40};
 
 	SDL_Texture *playTexture = SDL_CreateTextureFromSurface(m_renderer, playSurface);	// NORMAL TEXTURE
 	SDL_Texture *musicTexture = SDL_CreateTextureFromSurface(m_renderer, musicSurface);
@@ -136,7 +136,7 @@ int main(int, char*[])
 
 	SDL_Rect spriteRect{ player.x, player.y, SPRSHEET_WIDTH, SPRSHEET_HEIGHT };
 
-	SDL_Rect frameRect{spriteRect.x, spriteRect.y, /*FRAME*/SPRSHEET_WIDTH, /*FRAME*/SPRSHEET_HEIGHT };
+	SDL_Rect frameRect{spriteRect.x, spriteRect.y, FRAME_WIDTH,FRAME_HEIGHT };
 
 	// --- TEXT ---
 
