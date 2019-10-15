@@ -14,6 +14,13 @@
 #define CURSOR_WIDTH 60
 #define CURSOR_HEIGHT 40
 
+#define SPRSHEET_WIDTH 400
+#define SPRSHEET_HEIGHT 70
+
+#define FRAME_WIDTH SPRSHEET_WIDTH/6
+#define FRAME_HEIGHT SPRSHEET_HEIGHT
+
+
 int main(int, char*[])
 {
 
@@ -25,6 +32,11 @@ int main(int, char*[])
 	};
 
 	position mouse;
+
+	position player;
+
+	player.x = SCREEN_WIDTH / 2 - SPRSHEET_WIDTH / 2;
+	player.y = SCREEN_HEIGHT / 2 - SPRSHEET_HEIGHT / 2;
 	
 	
 
@@ -106,6 +118,7 @@ int main(int, char*[])
 		//Background
 	SDL_Texture* bgTexture{ IMG_LoadTexture(m_renderer, "../../res/img/bg.jpg") };
 	if (bgTexture == nullptr) throw "Error: bgTexture init";
+
 	SDL_Rect bgRect{ 0,0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
 	//mouse.x = event.motion.x;
@@ -114,9 +127,16 @@ int main(int, char*[])
 		//Cursor
 	SDL_Texture* cursorTexture{ IMG_LoadTexture(m_renderer, "../../res/img/kintoun.png") }; //kintoun.png
 	if (cursorTexture == nullptr) throw "Error: cursorTexture init";
+
 	SDL_Rect cursorRect{/*Coordenadas X e Y del ratón*/ mouse.x, mouse.y, CURSOR_WIDTH, CURSOR_HEIGHT };
 
 	//-->Animated Sprite ---
+	SDL_Texture* playerTexture{ IMG_LoadTexture(m_renderer, "../../res/img/sp01.png") }; // sp01.png
+	if (playerTexture == nullptr) throw "Error: playerTexture init";
+
+	SDL_Rect spriteRect{ player.x, player.y, SPRSHEET_WIDTH, SPRSHEET_HEIGHT };
+
+	SDL_Rect frameRect{spriteRect.x, /*spriteRect.y*/0, FRAME_WIDTH, FRAME_HEIGHT };
 
 	// --- TEXT ---
 
@@ -296,13 +316,22 @@ int main(int, char*[])
 		//Cursor
 		SDL_RenderCopy(m_renderer, cursorTexture, nullptr, &cursorRect);
 
+		//Sprite
+		SDL_RenderCopy(m_renderer, playerTexture, &spriteRect, &frameRect);
+
 		SDL_RenderPresent(m_renderer);
 
 	}
 
 	// --- DESTROY ---
 	SDL_DestroyTexture(bgTexture);
-	// SDL_DestroyTexture(cursorTexture); // HAY QUE DESTRUIRLO??
+	SDL_DestroyTexture(cursorTexture); // HAY QUE DESTRUIRLO??
+
+	SDL_DestroyTexture(playTexture);
+	SDL_DestroyTexture(musicTexture);
+	SDL_DestroyTexture(exitTexture);
+	SDL_DestroyTexture(playerTexture);
+
 	IMG_Quit();
 	SDL_DestroyRenderer(m_renderer);
 	SDL_DestroyWindow(m_window);
