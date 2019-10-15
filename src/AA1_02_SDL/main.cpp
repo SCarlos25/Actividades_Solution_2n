@@ -136,7 +136,7 @@ int main(int, char*[])
 
 	SDL_Rect spriteRect{ player.x, player.y, SPRSHEET_WIDTH, SPRSHEET_HEIGHT };
 
-	SDL_Rect frameRect{spriteRect.x, /*spriteRect.y*/0, FRAME_WIDTH, FRAME_HEIGHT };
+	SDL_Rect frameRect{spriteRect.x, spriteRect.y, /*FRAME*/SPRSHEET_WIDTH, /*FRAME*/SPRSHEET_HEIGHT };
 
 	// --- TEXT ---
 
@@ -318,6 +318,7 @@ int main(int, char*[])
 
 		//Sprite
 		SDL_RenderCopy(m_renderer, playerTexture, &spriteRect, &frameRect);
+		//SDL_RenderCopy(m_renderer, playerTexture, &frameRect, &spriteRect);
 
 		SDL_RenderPresent(m_renderer);
 
