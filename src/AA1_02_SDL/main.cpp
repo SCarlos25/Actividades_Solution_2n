@@ -119,7 +119,7 @@ int main(int, char*[])
 	SDL_Texture* bgTexture{ IMG_LoadTexture(m_renderer, "../../res/img/bg.jpg") };
 	if (bgTexture == nullptr) throw "Error: bgTexture init";
 
-	SDL_Rect bgRect{ 0,0, SCREEN_WIDTH, SCREEN_HEIGHT };
+	SDL_Rect bgRect{ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
 	//mouse.x = event.motion.x;
 	//mouse.y = event.motion.y;
@@ -131,12 +131,20 @@ int main(int, char*[])
 	SDL_Rect cursorRect{/*Coordenadas X e Y del ratón*/ mouse.x, mouse.y, CURSOR_WIDTH, CURSOR_HEIGHT };
 
 	//-->Animated Sprite ---
-	SDL_Texture* playerTexture{ IMG_LoadTexture(m_renderer, "../../res/img/sp01.png") }; // sp01.png
+	SDL_Texture* playerTexture{ IMG_LoadTexture(m_renderer, "../../res/img/bg.jpg") }; // sp01.png
 	if (playerTexture == nullptr) throw "Error: playerTexture init";
 
-	SDL_Rect spriteRect{ player.x, player.y, SPRSHEET_WIDTH, SPRSHEET_HEIGHT };
+	int frameWidth, frameHeight;
 
-	SDL_Rect frameRect{spriteRect.x, spriteRect.y, FRAME_WIDTH,FRAME_HEIGHT };
+	frameWidth = FRAME_WIDTH;
+	frameHeight = FRAME_HEIGHT;
+
+	SDL_QueryTexture(playerTexture, NULL, NULL, &frameWidth, &frameHeight);
+
+	SDL_Rect spriteRect {player.x, player.y, SPRSHEET_WIDTH, SPRSHEET_HEIGHT };
+
+	SDL_Rect frameRect {spriteRect.x, spriteRect.y, FRAME_WIDTH, FRAME_HEIGHT };
+
 
 	// --- TEXT ---
 
@@ -146,6 +154,7 @@ int main(int, char*[])
 	// --- GAME LOOP ---
 
 	SDL_Event event;
+
 	bool isRunning = true;
 	bool click = false;
 	bool music = true;
@@ -160,7 +169,7 @@ int main(int, char*[])
 
 	while (isRunning) {
 		// HANDLE EVENTS
-		while (SDL_PollEvent(&event)) {
+		while (SDL_PollEvent(&event)) { //Solicitud para recibir inputs
 			switch (event.type) {
 			case SDL_QUIT:
 				isRunning = false;
@@ -317,8 +326,12 @@ int main(int, char*[])
 		SDL_RenderCopy(m_renderer, cursorTexture, nullptr, &cursorRect);
 
 		//Sprite
+
+		//SDL_RenderCopy(m_renderer, playerTexture, nullptr /*&spriteRect*/, &frameRect);
+		//SDL_RenderCopy(m_renderer, playerTexture, nullptr /*&frameRect*/, &spriteRect);
+
+		SDL_RenderCopy(m_renderer, playerTexture, &frameRect, &spriteRect);
 		SDL_RenderCopy(m_renderer, playerTexture, &spriteRect, &frameRect);
-		//SDL_RenderCopy(m_renderer, playerTexture, &frameRect, &spriteRect);
 
 		SDL_RenderPresent(m_renderer);
 
