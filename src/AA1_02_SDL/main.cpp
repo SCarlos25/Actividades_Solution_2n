@@ -139,7 +139,7 @@ int main(int, char*[])
 	frameWidth = FRAME_WIDTH;
 	frameHeight = FRAME_HEIGHT;
 
-	SDL_QueryTexture(playerTexture, NULL, NULL, &frameWidth, &frameHeight);
+	//SDL_QueryTexture(playerTexture, NULL, NULL, FRAME_WIDTH, FRAME_HEIGHT/*&frameWidth, &frameHeight*/);
 
 	SDL_Rect spriteRect {player.x, player.y, SPRSHEET_WIDTH, SPRSHEET_HEIGHT };
 
