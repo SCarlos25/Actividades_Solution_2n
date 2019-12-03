@@ -78,7 +78,45 @@ public:
 	
 	}
 
-	
+	void PreOrder(Node root) {
+		std::cout << root.data << std::endl;
+		if (root.left != nullptr) { PreOrder(*root.left); }
+		//else {
+			if (root.right != nullptr) { PreOrder(*root.right); }
+			//else { return; }
+		//}
+		if (root.right == nullptr && root.left == nullptr) { return; }
 	}
 
+	void InOrder(Node root) {
+		//if (root.left != nullptr) { /*std::cout << root.left->data << std::endl;*/ InOrder(*root.left); }
+		//else { std::cout << root.data << std::endl; }
+
+		if (root.left == nullptr) { std::cout << root.data << std::endl; }
+		else { InOrder(*root.left); std::cout << root.data << std::endl; }
+
+		if (root.right != nullptr) { /*std::cout << root.right->data << std::endl;*/ InOrder(*root.right); }
+		else { return; }
+		//if (root.right == nullptr && root.left == nullptr) { std::cout << root.data << std::endl; return; }
+	}
+
+	void PostOrder(Node root) {
+		if (root.left != nullptr) {
+			PostOrder(*root.left); //std::cout << root.data << std::endl;
+		}
+	
+			//if (root.left->left == nullptr) { std::cout << root.data << std::endl; }
+
+			if (root.right != nullptr) {
+				PostOrder(*root.right); /*std::cout << root.right->data << std::endl << root.data << std::endl*/;
+			}
+			else {
+				std::cout << root.right->data << root.data << std::endl;
+			
+		}
+			return;
+		 
+
+	}
 };
+
