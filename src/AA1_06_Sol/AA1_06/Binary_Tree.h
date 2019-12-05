@@ -101,22 +101,58 @@ public:
 	}
 
 	void PostOrder(Node root) {
-		if (root.left != nullptr) {
-			PostOrder(*root.left); //std::cout << root.data << std::endl;
-		}
-	
-			//if (root.left->left == nullptr) { std::cout << root.data << std::endl; }
 
-			if (root.right != nullptr) {
-				PostOrder(*root.right); /*std::cout << root.right->data << std::endl << root.data << std::endl*/;
-			}
-			else {
-				std::cout << root.right->data << root.data << std::endl;
-			
+		Node* myNode = &root;
+
+		if (myNode->left != nullptr) {
+			PostOrder(*myNode->left); //std::cout << myNode->left->data << std::endl;
 		}
-			return;
-		 
+
+		if (myNode->right != nullptr) {
+			PostOrder(*myNode->right); //std::cout << myNode->right->data << std::endl /*<< root.data << std::endl*/;
+		}
+		
+		std::cout << myNode->data << std::endl;
+			
+		
+	}
+
+	void GetNumberNodes(Node root, int &n) {
+		//int* num = new int(0);
+		if (root.left != nullptr) { n++; GetNumberNodes(*root.left, n); }
+		if (root.right != nullptr) { n++; GetNumberNodes(*root.right, n); }
+		if (root.left == nullptr && root.right == nullptr) return;
 
 	}
+
+	int GetNum(Node root) {
+		int num = 1;
+		//Node origin = root;
+		GetNumberNodes(root, num);
+		return num;
+	}
+
+	void GetTreeHeight(Node root, int &num) {
+	
+		if (root.right != nullptr || root.left != nullptr) {
+			num++;
+			if(root.right != nullptr) GetTreeHeight(*root.right, num);
+			if(root.left != nullptr) GetTreeHeight(*root.left, num);
+		}
+		else { return; }
+
+	}
+
+
+	int GetHeight(Node root) {
+
+		int num = 0;
+		GetTreeHeight(root, num);
+		return num;
+
+	}
+				 
+
+	
 };
 
