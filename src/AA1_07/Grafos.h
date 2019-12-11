@@ -31,9 +31,8 @@ public:
 	//3. Inserta el arco si no existe /////
 	void Insert(edge ed) {
 		
-		vertex* it;
 		
-		it = g.find(static_cast<vertex>(ed.first));
+		if (g.find(ed.first)) {}
 
 		if (it != nullptr) {}
 	
