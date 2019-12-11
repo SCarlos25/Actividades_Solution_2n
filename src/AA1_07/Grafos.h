@@ -20,8 +20,15 @@ public:
 	GraphD(std::vector<edge> el) {
 		std::vector<edge>::iterator iterator = el.begin();
 		while (iterator != el.end()) {
-			
-			g.insert(std::pair<vertex, std::vector<vertex>>(iterator->first, iterator->second));
+			std::vector<edge>::iterator iterator2 = el.begin();
+			std::vector<vertex> v;
+			while (iterator2 != el.end()) {
+				int i = iterator->first;
+				if (i == iterator->first) v.push_back(iterator->second);
+				iterator2++;
+			}
+			g.insert(std::pair<vertex, std::vector<vertex>>(iterator->first, v));
+			iterator++;
 		}
 	
 	}
@@ -32,9 +39,11 @@ public:
 	void Insert(edge ed) {
 		
 		
-		if (g.find(ed.first)) {}
+		if (g.find(ed.first) != this->g.end()) {
+		
+			
 
-		if (it != nullptr) {}
+		}
 	
 	}
 
