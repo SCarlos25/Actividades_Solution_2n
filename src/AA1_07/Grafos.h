@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <forward_list>
+#include <algorithm>
 
 typedef int vertex;
 typedef std::pair<int, int> edge;
@@ -18,18 +19,23 @@ public:
 
 	//2. Constructor a partir de la lista de arcos /////
 	GraphD(std::vector<edge> el) {
+
 		std::vector<edge>::iterator iterator = el.begin();
 		while (iterator != el.end()) {
 			std::vector<edge>::iterator iterator2 = el.begin();
 			std::vector<vertex> v;
 			while (iterator2 != el.end()) {
 				int i = iterator->first;
-				if (i == iterator->first) v.push_back(iterator->second);
+				if (i == iterator2->first) { v.push_back(iterator2->second); } // metemos valores en el vector
 				iterator2++;
 			}
 			g.insert(std::pair<vertex, std::vector<vertex>>(iterator->first, v));
 			iterator++;
 		}
+
+		/*for (int i = 0; i < el.size(); i++) {
+			Insert(el[i]);
+		}*/
 	
 	}
 
@@ -37,18 +43,78 @@ public:
 
 	//3. Inserta el arco si no existe /////
 	void Insert(edge ed) {
-		
-		
-		if (g.find(ed.first) != this->g.end()) {
-		
-			
+		std::map<vertex, std::vector<vertex>>::iterator it = g.find(ed.first);
+		std::map<vertex, std::vector<vertex>>::iterator it2 = g.find(ed.second);
+
+		//if (it2 == g.end()) { g[ed.second]; it2 = g.find(ed.second); }
+		/*else*/ if (it != g.end() && it2 != g.end()) {
+
+			//std::vector<vertex>::iterator it3 = std::find(g[ed.first].begin(), g[ed.first].end(), ed.second);
+			//if (it3 != g[ed.first].end()/* && ed.second !=*it3*/) { g[ed.first].push_back(ed.second); }
+
+			std::vector<vertex>::iterator v_it = it->second.begin();
+
+			if (it->second.size() == 1) {
+
+				if (*v_it == ed.second) {}
+				else { it->second.push_back(ed.second); return; }
+
+			}
+
+			bool exists = false;
+			for (; v_it != it->second.end(); v_it++) {
+
+				if (*v_it == ed.second) { exists = true; }
+
+			}
+			if (!exists) { it->second.push_back(ed.second); }
+
+
+			/*}
+			else {
+				g[ed.first];
+				g[ed.first].push_back(ed.second);
+			}*/
 
 		}
-	
+
 	}
 
 	//4. Borra el arco si existe /////
-	void Remove(edge);
+	void Remove(edge ed) {
+
+		std::map<vertex, std::vector<vertex>>::iterator it = g.find(ed.first);
+		if (it != g.end()) {
+			std::vector<vertex>::iterator v_it = it->second.begin();
+
+			if (it->second.size() == 1) {
+
+				if (*v_it == ed.second) {}
+				else { it->second.erase(v_it); return; }
+
+			}
+
+			for (; v_it != it->second.end(); v_it++) {
+
+				if (*v_it == ed.second) { it->second.erase(v_it); return; }
+
+			}
+
+
+		}
+
+		//std::map<vertex, std::vector<vertex>>::iterator it = g.find(ed.first);
+		
+
+		/*if (it != g.end()) {
+
+			std::vector<vertex>::iterator it3 = std::find(g[ed.first].begin(), g[ed.first].end(), ed.second);
+			if (it3 != g[ed.first].end()) { 
+					g[ed.first].erase(it3);
+				
+			}
+		}*/
+	}
 
 	//5. Verifica si existe un camino desde el vértice initial
 	bool Path(vertex initial, vertex final);
@@ -58,7 +124,18 @@ public:
 	bool Path(vertex initial, vertex final, std::forward_list<vertex> vlist);
 
 	//7. Imprime por pantalla la lista de los arcos representando al grafo /////
-	void Print();
+	void Print() {
+		std::map<vertex, std::vector<vertex>>::iterator it = g.begin();
+		while (it != g.end()) {
+		
+			std::vector<vertex>::iterator v_it = it->second.begin();
+			for (; v_it != it->second.end(); v_it++) {
+				std::cout << it->first << " - " << *v_it << std::endl;
+			}
+			it++;
+		}
+	
+	}
 
 	//8. Verifica que el grafo es euleriano
 	bool IsEulerian();
