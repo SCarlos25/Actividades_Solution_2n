@@ -17,10 +17,10 @@ public:
 	//1. Constructor por copia
 	GraphD(GraphD *g);
 
-	//2. Constructor a partir de la lista de arcos /////
+	//2. Constructor a partir de la lista de arcos
 	GraphD(std::vector<edge> el) {
 
-		std::vector<edge>::iterator iterator = el.begin();
+		/*std::vector<edge>::iterator iterator = el.begin();
 		while (iterator != el.end()) {
 			std::vector<edge>::iterator iterator2 = el.begin();
 			std::vector<vertex> v;
@@ -31,28 +31,39 @@ public:
 			}
 			g.insert(std::pair<vertex, std::vector<vertex>>(iterator->first, v));
 			iterator++;
-		}
-
-		/*for (int i = 0; i < el.size(); i++) {
-			Insert(el[i]);
 		}*/
+
+		for (int i = 0; i < el.size(); i++) {
+			Insert(el[i]);
+		}
 	
 	}
 
 	~GraphD();
 
-	//3. Inserta el arco si no existe /////
+	//3. Inserta el arco si no existe
 	void Insert(edge ed) {
 		std::map<vertex, std::vector<vertex>>::iterator it = g.find(ed.first);
 		std::map<vertex, std::vector<vertex>>::iterator it2 = g.find(ed.second);
 
-		//if (it2 == g.end()) { g[ed.second]; it2 = g.find(ed.second); }
-		/*else*/ if (it != g.end() && it2 != g.end()) {
+		if (it2 == g.end()) { g[ed.second]; it2 = g.find(ed.second); }
+		/*else*/ if (it != g.end() /*&& it2 != g.end()*/) {
 
-			//std::vector<vertex>::iterator it3 = std::find(g[ed.first].begin(), g[ed.first].end(), ed.second);
-			//if (it3 != g[ed.first].end()/* && ed.second !=*it3*/) { g[ed.first].push_back(ed.second); }
+			std::vector<vertex>::iterator it3;
+			
+			if (g[ed.first].size() == 0) { g[ed.first].push_back(ed.second); it3 = g[ed.first].end(); }
+			else if (g[ed.first].size() == 1 && g[ed.first][0] != ed.second) {
+				bool exists = false;
+				for (int i = 0; i < g[ed.first].size(); i++) { if (g[ed.first][i] == ed.second) exists = true; }
 
-			std::vector<vertex>::iterator v_it = it->second.begin();
+				if (!exists) { g[ed.first].push_back(ed.second); }
+				it3 = g[ed.first].end();
+			}
+			else { it3 = std::find(g[ed.first].begin(), g[ed.first].end(), ed.second); }
+
+			if (it3 != g[ed.first].end() && ed.second !=*it3) { g[ed.first].push_back(ed.second); }
+
+			/*std::vector<vertex>::iterator v_it = it->second.begin();
 
 			if (it->second.size() == 1) {
 
@@ -67,23 +78,46 @@ public:
 				if (*v_it == ed.second) { exists = true; }
 
 			}
-			if (!exists) { it->second.push_back(ed.second); }
+			if (!exists) { it->second.push_back(ed.second); }*/
 
 
-			/*}
+			}
 			else {
 				g[ed.first];
 				g[ed.first].push_back(ed.second);
-			}*/
+			}
 
 		}
 
-	}
+	
 
-	//4. Borra el arco si existe /////
+	//4. Borra el arco si existe
 	void Remove(edge ed) {
 
 		std::map<vertex, std::vector<vertex>>::iterator it = g.find(ed.first);
+		std::map<vertex, std::vector<vertex>>::iterator it2 = g.find(ed.second);
+
+		if (it != g.end() && it2 !=g.end()) {
+
+			std::vector<vertex>::iterator it3;
+
+			if (g[ed.first].size() == 0) { g.erase(ed.first); it3 = g[ed.first].end(); }
+
+			else if (g[ed.first].size() == 1 && g[ed.first][0] == ed.second) {
+
+				g.erase(ed.first);
+				it3 = g[ed.first].end();
+			}
+
+			else { it3 = std::find(g[ed.first].begin(), g[ed.first].end(), ed.second); }
+
+			if (it3 != g[ed.first].end() && ed.second == *it3) { g[ed.first].erase(it3); }
+
+		}
+		
+
+
+		/*std::map<vertex, std::vector<vertex>>::iterator it = g.find(ed.first);
 		if (it != g.end()) {
 			std::vector<vertex>::iterator v_it = it->second.begin();
 
@@ -101,11 +135,10 @@ public:
 			}
 
 
-		}
+		}*/
 
 		//std::map<vertex, std::vector<vertex>>::iterator it = g.find(ed.first);
 		
-
 		/*if (it != g.end()) {
 
 			std::vector<vertex>::iterator it3 = std::find(g[ed.first].begin(), g[ed.first].end(), ed.second);
@@ -127,12 +160,13 @@ public:
 	void Print() {
 		std::map<vertex, std::vector<vertex>>::iterator it = g.begin();
 		while (it != g.end()) {
-		
+			std::cout << it->first << ": ";
 			std::vector<vertex>::iterator v_it = it->second.begin();
 			for (; v_it != it->second.end(); v_it++) {
-				std::cout << it->first << " - " << *v_it << std::endl;
+				std::cout << *v_it << " ";
 			}
 			it++;
+			std::cout << std::endl;
 		}
 	
 	}
